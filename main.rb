@@ -34,9 +34,17 @@ module Enumerable
     end
     return_val
   end
+
+  def my_any
+    return_val = false
+    my_each do |element|
+      return_val = yield element
+    end
+    return_val
+  end
 end
 
-my_integer_array = [1, 2, 3, 4, 5, 6, 7, 'n']
+my_integer_array = [1, 2, 3, 4, 5, 6, 7]
 my_mixed_array = [1, 2, 3, 'a', 'b', 'c']
 
 puts("\nmy_each:")
@@ -53,8 +61,14 @@ puts("\nmy_select (selecting even numbers):")
 evens = my_integer_array.my_select(&:even?)
 puts evens
 
-puts("\nmy_all (checking if all arguments are numbers): ")
-result = my_mixed_array.my_all do |element|
+puts("\nmy_all (checking if all of the array elements are numbers): ")
+result_all_ints = my_mixed_array.my_all do |element|
   element.is_a? Integer
 end
-puts result
+puts result_all_ints
+
+puts("\nmy_any (checking if any of the array elements are strings )")
+result_all_strings = my_mixed_array.my_any do |element|
+  element.is_a? String
+end
+puts result_all_strings
