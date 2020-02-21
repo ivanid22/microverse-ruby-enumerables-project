@@ -42,6 +42,14 @@ module Enumerable
     end
     return_val
   end
+
+  def my_none
+    return_val = true
+    my_each do |element|
+      return_val = !(yield element)
+    end
+    return_val
+  end
 end
 
 my_integer_array = [1, 2, 3, 4, 5, 6, 7]
@@ -67,8 +75,14 @@ result_all_ints = my_mixed_array.my_all do |element|
 end
 puts result_all_ints
 
-puts("\nmy_any (checking if any of the array elements are strings )")
+puts("\nmy_any (checking if any of the array elements are strings): ")
 result_all_strings = my_mixed_array.my_any do |element|
   element.is_a? String
 end
 puts result_all_strings
+
+puts("\nmy_none (checking if none of the elements are strings): ")
+result_no_strings = my_integer_array.my_none do |element|
+  element.is_a? String
+end
+puts result_no_strings
