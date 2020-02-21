@@ -18,16 +18,28 @@ module Enumerable
       pos += 1
     end
   end
+
+  def my_select
+    return_arr = []
+    my_each do |element|
+      return_arr.push(element) if yield element
+    end
+    return_arr
+  end
 end
 
-my_array = [1, 3, 5, 7]
+my_array = [1, 2, 3, 4, 5, 6, 7]
 
-puts('my_each:')
+puts("\nmy_each:")
 my_array.my_each do |element|
   puts element
 end
 
-puts("\nMy_each_with_index:")
+puts("\nmy_each_with_index:")
 my_array.my_each_with_index do |element, index|
   puts "Element at position #{index}: #{element}"
 end
+
+puts("\nmy_select (selecting even numbers):")
+evens = my_array.my_select(&:even?)
+puts evens
