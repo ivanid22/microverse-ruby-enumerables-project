@@ -50,9 +50,17 @@ module Enumerable
     end
     return_val
   end
+
+  def my_count(arg = nil)
+    count_val = 0
+    my_each do |element|
+      count_val += 1 if (block_given? && yield(element)) || (element == arg)
+    end
+    count_val
+  end
 end
 
-my_integer_array = [1, 2, 3, 4, 5, 6, 7]
+my_integer_array = [1, 1, 2, 3, 4, 5, 6, 7]
 my_mixed_array = [1, 2, 3, 'a', 'b', 'c']
 
 puts("\nmy_each:")
@@ -66,23 +74,37 @@ my_integer_array.my_each_with_index do |element, index|
 end
 
 puts("\nmy_select (selecting even numbers):")
-evens = my_integer_array.my_select(&:even?)
-puts evens
+puts my_integer_array.my_select(&:even?)
 
 puts("\nmy_all (checking if all of the array elements are numbers): ")
-result_all_ints = my_mixed_array.my_all do |element|
-  element.is_a? Integer
-end
-puts result_all_ints
+puts(
+  my_mixed_array.my_all do |element|
+    element.is_a? Integer
+  end
+)
 
 puts("\nmy_any (checking if any of the array elements are strings): ")
-result_all_strings = my_mixed_array.my_any do |element|
-  element.is_a? String
-end
-puts result_all_strings
+puts(
+  my_mixed_array.my_any do |element|
+    element.is_a? String
+  end
+)
 
 puts("\nmy_none (checking if none of the elements are strings): ")
-result_no_strings = my_integer_array.my_none do |element|
-  element.is_a? String
-end
-puts result_no_strings
+puts(
+  my_integer_array.my_none do |element|
+    element.is_a? String
+  end
+)
+
+puts("\nmy_count (with an argument == 1)")
+puts(
+  my_integer_array.my_count(1)
+)
+
+puts("\nmy_count (with a block passed)")
+puts(
+  my_integer_array.my_count do |element|
+    element.is_a? Integer
+  end
+)
