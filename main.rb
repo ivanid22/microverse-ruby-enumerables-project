@@ -59,6 +59,20 @@ module Enumerable
     count_val
   end
 
+  def my_map(proc_arg = nil)
+    return_arr = []
+    my_each_with_index do |element, index|
+      if proc_arg
+        return_arr.push(proc_arg.call(element))
+      elsif block_given?
+        return_arr.push(yield(element))
+      else
+        return_arr.push(index)
+      end
+    end
+    return_arr
+  end
+
   def my_inject(*args)
     memo = args[0].is_a?(Symbol) ? self[0] : args[0] || self[0]
     symbol = identify_symbol(*args)
@@ -96,18 +110,18 @@ my_mixed_array = [1, 2, 3, 'a', 'b', 'c']
 
 puts("\nmy_each:")
 my_integer_array.my_each do |element|
-  puts element
+  print "#{element} "
 end
 
-puts("\nmy_each_with_index:")
+puts("\n\nmy_each_with_index:")
 my_integer_array.my_each_with_index do |element, index|
   puts "Element at position #{index}: #{element}"
 end
 
 puts("\nmy_select (selecting even numbers):")
-puts my_integer_array.my_select(&:even?)
+print my_integer_array.my_select(&:even?)
 
-puts("\nmy_all (checking if all of the array elements are numbers): ")
+puts("\n\nmy_all (checking if all of the array elements are numbers): ")
 puts(
   my_mixed_array.my_all do |element|
     element.is_a? Integer
@@ -129,16 +143,30 @@ puts(
 )
 
 puts("\nmy_count (with an argument == 1)")
-puts(
+print(
   my_integer_array.my_count(1)
 )
 
 puts("\nmy_count (with a block passed)")
-puts(
+print(
   my_integer_array.my_count do |element|
     element.is_a? Integer
   end
 )
 
 puts("\nmy_inject (calling multiply_els)")
-puts multiply_els([2, 5, 7])
+puts multiply_els(my_integer_array)
+
+puts("\nmy_map (multiplying each element by 2 with block)")
+print(
+  my_integer_array.my_map do |x|
+    x * 2
+  end
+)
+
+puts("\n\nMy map (multiplying each element by 2 with proc)")
+print(
+  my_integer_array.my_map(proc { |value| value * 2 })
+)
+
+puts("\n")
