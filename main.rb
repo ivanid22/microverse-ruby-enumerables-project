@@ -58,9 +58,40 @@ module Enumerable
     end
     count_val
   end
+
+  def my_inject(*args)
+    memo = args[0].is_a?(Symbol) ? self[0] : args[0] || self[0]
+    symbol = identify_symbol(*args)
+    pos = settle_start_position(*args)
+    while pos < length
+      memo = block_given? ? yield(memo, self[pos]) : memo.send(symbol, self[pos])
+      pos += 1
+    end
+    memo
+  end
 end
 
-my_integer_array = [1, 1, 2, 3, 4, 5, 6, 7]
+def settle_start_position(*args)
+  start_pos = 1
+  start_pos = 0 if args[0] && !args[0].is_a?(Symbol)
+  start_pos
+end
+
+def identify_symbol(*args)
+  sym = nil
+  if args.count == 2
+    sym = args[1]
+  elsif args.count == 1
+    sym = args[0] if args[0].is_a?(Symbol)
+  end
+  sym
+end
+
+def multiply_els(arr)
+  arr.my_inject(:*)
+end
+
+my_integer_array = [20, 1, 1, 2, 3, 4, 5, 6, 7]
 my_mixed_array = [1, 2, 3, 'a', 'b', 'c']
 
 puts("\nmy_each:")
@@ -108,3 +139,6 @@ puts(
     element.is_a? Integer
   end
 )
+
+puts("\nmy_inject (calling multiply_els)")
+puts multiply_els([2, 5, 7])
