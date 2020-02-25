@@ -1,6 +1,8 @@
 module Enumerable
   def my_each
     pos = 0
+    return to_enum unless block_given?
+
     loop do
       break if pos >= length
 
@@ -11,6 +13,8 @@ module Enumerable
 
   def my_each_with_index
     pos = 0
+    return to_enum unless block_given?
+
     loop do
       break if pos >= length
 
@@ -21,32 +25,36 @@ module Enumerable
 
   def my_select
     return_arr = []
+    return to_enum unless block_given?
+
     my_each do |element|
       return_arr.push(element) if yield element
     end
     return_arr
   end
 
-  def my_all
+  def my_all?(arg = nil)
     return_val = true
     my_each do |element|
-      return_val = yield element
+      return_val = (block_given? && yield(element)) || (arg == element)
     end
     return_val
   end
 
-  def my_any
+  def my_any?(arg = nil)
     return_val = false
     my_each do |element|
-      return_val = yield element
+      return_val = (block_given? && yield(element)) || (arg == element)
+      return true if return_val
     end
     return_val
   end
 
-  def my_none
+  def my_none?(arg = nil)
     return_val = true
     my_each do |element|
-      return_val = !(yield element)
+      return_val = !((block_given? && yield(element)) || (arg == element))
+      return false unless return_val
     end
     return_val
   end
@@ -54,7 +62,7 @@ module Enumerable
   def my_count(arg = nil)
     count_val = 0
     my_each do |element|
-      count_val += 1 if (block_given? && yield(element)) || (element == arg)
+      count_val += 1 if ((block_given? && yield(element)) || (element == arg)) || (!block_given? && !arg)
     end
     count_val
   end
@@ -70,15 +78,18 @@ module Enumerable
         return_arr.push(index)
       end
     end
-    return_arr
+    return return_arr unless !block_given? && !proc_arg
+
+    return_arr.to_enum
   end
 
   def my_inject(*args)
-    memo = args[0].is_a?(Symbol) ? self[0] : args[0] || self[0]
+    arr = to_a
+    memo = args[0].is_a?(Symbol) ? arr[0] : args[0] || arr[0]
     symbol = identify_symbol(*args)
     pos = settle_start_position(*args)
-    while pos < length
-      memo = block_given? ? yield(memo, self[pos]) : memo.send(symbol, self[pos])
+    while pos < count
+      memo = block_given? ? yield(memo, arr[pos]) : memo.send(symbol, arr[pos])
       pos += 1
     end
     memo
@@ -104,69 +115,3 @@ end
 def multiply_els(arr)
   arr.my_inject(:*)
 end
-
-my_integer_array = [20, 1, 1, 2, 3, 4, 5, 6, 7]
-my_mixed_array = [1, 2, 3, 'a', 'b', 'c']
-
-puts("\nmy_each:")
-my_integer_array.my_each do |element|
-  print "#{element} "
-end
-
-puts("\n\nmy_each_with_index:")
-my_integer_array.my_each_with_index do |element, index|
-  puts "Element at position #{index}: #{element}"
-end
-
-puts("\nmy_select (selecting even numbers):")
-print my_integer_array.my_select(&:even?)
-
-puts("\n\nmy_all (checking if all of the array elements are numbers): ")
-puts(
-  my_mixed_array.my_all do |element|
-    element.is_a? Integer
-  end
-)
-
-puts("\nmy_any (checking if any of the array elements are strings): ")
-puts(
-  my_mixed_array.my_any do |element|
-    element.is_a? String
-  end
-)
-
-puts("\nmy_none (checking if none of the elements are strings): ")
-puts(
-  my_integer_array.my_none do |element|
-    element.is_a? String
-  end
-)
-
-puts("\nmy_count (with an argument == 1)")
-print(
-  my_integer_array.my_count(1)
-)
-
-puts("\nmy_count (with a block passed)")
-print(
-  my_integer_array.my_count do |element|
-    element.is_a? Integer
-  end
-)
-
-puts("\nmy_inject (calling multiply_els)")
-puts multiply_els(my_integer_array)
-
-puts("\nmy_map (multiplying each element by 2 with block)")
-print(
-  my_integer_array.my_map do |x|
-    x * 2
-  end
-)
-
-puts("\n\nMy map (multiplying each element by 2 with proc)")
-print(
-  my_integer_array.my_map(proc { |value| value * 2 })
-)
-
-puts("\n")
