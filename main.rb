@@ -115,3 +115,7 @@ end
 def multiply_els(arr)
   arr.my_inject(:*)
 end
+
+# The following lines are used for showcasing multiply_els, not for debugging purposes
+puts 'multiply_els [1, 2, 3, 4, 5]:'
+puts multiply_els([1, 2, 3, 4, 5])
