@@ -36,7 +36,9 @@ module Enumerable
   def my_all?(arg = nil)
     return_val = true
     my_each do |element|
-      return_val = (block_given? && yield(element)) || (arg == element)
+      return_val = (block_given? && yield(element)) || (arg === element)
+      return_val = true?(element) if !block_given? && !arg
+      return false unless return_val
     end
     return_val
   end
@@ -44,7 +46,8 @@ module Enumerable
   def my_any?(arg = nil)
     return_val = false
     my_each do |element|
-      return_val = (block_given? && yield(element)) || (arg == element)
+      return_val = (block_given? && yield(element)) || (arg === element)
+      return_val = true?(element) if !block_given? && !arg
       return true if return_val
     end
     return_val
@@ -53,16 +56,17 @@ module Enumerable
   def my_none?(arg = nil)
     return_val = true
     my_each do |element|
-      return_val = !((block_given? && yield(element)) || (arg == element))
-      return false unless return_val
+      return_val = !((block_given? && yield(element)) || (arg === element))
+      return_val = true?(element) if !block_given? && !arg
+      return false if return_val
     end
-    return_val
+    true
   end
 
   def my_count(arg = nil)
     count_val = 0
     my_each do |element|
-      count_val += 1 if ((block_given? && yield(element)) || (element == arg)) || (!block_given? && !arg)
+      count_val += 1 if ((block_given? && yield(element)) || (element === arg)) || (!block_given? && !arg)
     end
     count_val
   end
@@ -94,6 +98,12 @@ module Enumerable
     end
     memo
   end
+end
+
+def true?(val = nil)
+  return false if val.nil? || !val
+
+  true
 end
 
 def settle_start_position(*args)
