@@ -15,7 +15,7 @@ RSpec.describe "Enumerable" do
       expect(
         numeric_arr.my_each do |el|
         end
-      ).to eql(arr) 
+      ).to eql(numeric_arr) 
     end
   
     it "should not return nil when called on an empty Enumerable" do
