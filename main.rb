@@ -22,6 +22,7 @@ module Enumerable
       yield self[pos], pos
       pos += 1
     end
+    self
   end
 
   def my_select
