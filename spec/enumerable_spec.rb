@@ -6,6 +6,12 @@ RSpec.describe "Enumerable" do
     [1, 2, 3, 4, 5, 6]
   }
 
+  let(:my_proc) {
+    proc { |el|
+      el*2
+    }
+  }
+
   describe "#my_each" do
     let(:numeric_arr) {
       [1, 2, 3, 4, 5, 6]
@@ -232,6 +238,28 @@ RSpec.describe "Enumerable" do
       count = [].my_count
       expect(count).to eql(0)
     end
+  end
 
+  describe "#my_map" do
+    it "should send the array to the proc, when both a proc and block are given" do
+      res = numeric_arr.my_map(my_proc) do |element|
+        element -= 1
+      end
+      expect(res).to eql([2, 4, 6, 8, 10, 12])
+    end
+
+    it "should return an Enumerator when neither a block or a proc are given" do
+      expect(
+        numeric_arr.my_map
+      ).to be_a(Enumerator)
+    end
+
+    it "should return an empty array when the sender is an empty array" do
+      expect(
+        [].my_map do
+          true
+        end
+      ).to eql([])
+    end
   end
 end
