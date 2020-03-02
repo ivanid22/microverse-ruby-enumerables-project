@@ -32,6 +32,7 @@ module Enumerable
     my_each do |element|
       return_arr.push(element) if yield element
     end
+    
     return_arr
   end
 
