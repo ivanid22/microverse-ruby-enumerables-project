@@ -131,4 +131,75 @@ RSpec.describe "Enumerable" do
     end
   end
 
+  describe "#my_any?" do
+    it "should yield elements to block, when a block is passed (any elements in the array > 5)" do
+      expect(
+        numeric_arr.my_any? do |el|
+          el > 5
+        end
+      ).to eql(true)
+    end
+
+    it "should return false if all of the elements are not equal to the argument (any strings in numeric_arr)" do
+      expect(
+        numeric_arr.my_any?(String)
+      ).not_to eql(true)
+    end
+
+    it "should not yield elements to the block when both an argument and a block are given" do
+      expect(
+        numeric_arr.my_any?(Integer) do
+          false
+        end
+      ).to eql(true)
+    end
+
+    it "should return true if any of the elements in the array are truthy, when no block and no argument are given" do
+      expect(
+        numeric_arr.my_any?
+      ).to eql(true)
+    end
+    
+    it "should return false if all elements in the array are falsey, when no block and no argument are given" do
+      expect(
+        [false, false, nil, nil].my_any?
+      ).not_to eql(true)
+    end
+  end
+
+  describe "#my_none?" do
+    it "should yield elements to block, when a block is passed (no elements in the array > 5)" do
+      expect(
+        numeric_arr.my_none? do |el|
+          el > 5
+        end
+      ).not_to eql(true)
+    end
+
+    it "should return false if any of the elements in the array are equal to the argument (any Numeric in numeric_arr)" do
+      expect(
+        numeric_arr.my_none?(Numeric)
+      ).not_to eql(true)
+    end
+
+    it "should not yield elements to the block when both an argument and a block are given" do
+      expect(
+        numeric_arr.my_none?(String) do
+          false
+        end
+      ).to eql(true)
+    end
+
+    it "should return true if none of the elements in the array are truthy, when no block and no argument are given" do
+      expect(
+        numeric_arr.my_none?
+      ).not_to eql(true)
+    end
+    
+    it "should return true if all elements in the array are falsey, when no block and no argument are given" do
+      expect(
+        [false, false, nil, nil].my_none?
+      ).to eql(true)
+    end
+  end
 end
