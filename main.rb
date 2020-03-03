@@ -9,6 +9,7 @@ module Enumerable
       yield self[pos]
       pos += 1
     end
+    self
   end
 
   def my_each_with_index
@@ -21,6 +22,7 @@ module Enumerable
       yield self[pos], pos
       pos += 1
     end
+    self
   end
 
   def my_select
@@ -30,6 +32,7 @@ module Enumerable
     my_each do |element|
       return_arr.push(element) if yield element
     end
+
     return_arr
   end
 
