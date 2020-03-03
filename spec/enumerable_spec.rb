@@ -1,21 +1,11 @@
 require './main'
 
 RSpec.describe 'Enumerable' do
-  let(:numeric_arr) do
-    [1, 2, 3, 4, 5, 6]
-  end
+  let(:numeric_arr) { [1, 2, 3, 4, 5, 6] }
 
-  let(:my_proc) do
-    proc do |el|
-      el * 2
-    end
-  end
+  let(:my_proc) { proc { |el| el * 2 } }
 
   describe '#my_each' do
-    let(:numeric_arr) do
-      [1, 2, 3, 4, 5, 6]
-    end
-
     it 'should return enum if no block given' do
       expect(numeric_arr.my_each).to be_a(Enumerator)
     end
@@ -41,10 +31,6 @@ RSpec.describe 'Enumerable' do
   end
 
   describe '#my_each_with_index' do
-    let(:numeric_arr) do
-      [1, 2, 3, 4, 5, 6]
-    end
-
     it 'should return enum if no block given' do
       expect(numeric_arr.my_each_with_index).to be_a(Enumerator)
     end
